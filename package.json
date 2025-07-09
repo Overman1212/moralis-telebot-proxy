@@ -9,7 +9,7 @@
   },
   "author": "",
   "license": "MIT",
-  "devDependencies": {
-    "@cloudflare/wrangler": "^3.0.0"
-  }
+"devDependencies": {
+  "@cloudflare/wrangler": "^2.6.0"
+}
 }
