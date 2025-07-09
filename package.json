@@ -1,0 +1,15 @@
+{
+  "name": "moralis-telebot-proxy",
+  "version": "1.0.0",
+  "description": "Cloudflare Worker to forward Moralis webhooks to TelebotCreator",
+  "main": "index.js",
+  "scripts": {
+    "start": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@cloudflare/wrangler": "^3.0.0"
+  }
+}
