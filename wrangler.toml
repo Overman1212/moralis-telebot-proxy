@@ -1,11 +1,5 @@
-name = "moralis-telebot-proxy"            # Your worker’s name, must be unique in your account
-main = "index.js"                         # Entry point file
-compatibility_date = "2025-07-09"        # Use today's date or later for compatibility
-type = "javascript"                      # Worker language type
+name = "my-webhook-api"
+type = "javascript"
 
-account_id = "your-cloudflare-account-id"  # Your Cloudflare account ID (get from dashboard)
-workers_dev = true                        # Enables deployment to workers.dev subdomain
-
-# Optional: If you want to deploy to a custom domain, uncomment and configure below
-# route = "your.domain.com/path"
-# zone_id = "your-cloudflare-zone-id"
+[env.production]
+workers_dev = true
