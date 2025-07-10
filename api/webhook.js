@@ -14,14 +14,14 @@ export default async function handler(req, res) {
     const tokenTransfers = body?.erc20Transfers || [];
     const USDT_BEP20_ADDRESS = "0x55d398326f99059ff775485246999027b3197955".toLowerCase();
 
-    // Find only incoming USDT transfer
+    // ✅ Filter: Only USDT (BEP20) deposit transfers
     const deposit = tokenTransfers.find(t =>
       t.tokenAddress?.toLowerCase() === USDT_BEP20_ADDRESS &&
-      t.toAddress?.toLowerCase() === tx.toAddress?.toLowerCase()
+      t.fromAddress?.toLowerCase() !== t.toAddress?.toLowerCase() // must be an actual transfer
     );
 
     if (!deposit) {
-      return res.status(200).json({ message: "No USDT deposit to forward" });
+      return res.status(200).json({ message: "No USDT deposit found" });
     }
 
     const decimals = deposit.decimals || 6;
@@ -54,7 +54,7 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error("Error:", error);
-    return res.status(500).json({ error: "Error processing webhook" });
+    console.error("Error processing webhook:", error);
+    return res.status(500).json({ error: "Internal server error" });
   }
 }
