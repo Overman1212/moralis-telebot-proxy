@@ -3,21 +3,17 @@ export default {
     if (request.method === 'POST') {
       try {
         const data = await request.json();
-        console.log("✅ Received POST data:", JSON.stringify(data));
+        console.log("✅ Received POST body:", data);
 
-        return new Response("✅ Webhook received successfully", {
+        return new Response("✅ Webhook received", {
           status: 200,
-          headers: {
-            "Content-Type": "text/plain"
-          }
+          headers: { "Content-Type": "text/plain" }
         });
-      } catch (err) {
-        console.error("❌ Failed to parse JSON", err);
-        return new Response("❌ Invalid JSON", {
+      } catch (e) {
+        console.error("❌ Invalid JSON:", e);
+        return new Response("❌ Bad Request", {
           status: 400,
-          headers: {
-            "Content-Type": "text/plain"
-          }
+          headers: { "Content-Type": "text/plain" }
         });
       }
     }
