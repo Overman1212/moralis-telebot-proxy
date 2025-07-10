@@ -14,24 +14,23 @@ export default async function handler(req, res) {
 
     const USDT_CONTRACT = "0x55d398326f99059ff775485246999027b3197955";
 
-    // Filter only USDT deposit transfer
-    const deposit = erc20Transfers.find(t =>
-      t.contract?.toLowerCase() === USDT_CONTRACT.toLowerCase() &&
-      t.to?.toLowerCase() === tx.toAddress?.toLowerCase() // deposit TO watched wallet
+    // ✅ Find first USDT transfer (deposit or withdrawal)
+    const usdtTx = erc20Transfers.find(t =>
+      t.contract?.toLowerCase() === USDT_CONTRACT.toLowerCase()
     );
 
-    if (!deposit) {
-      return res.status(200).json({ message: "No USDT deposit detected" });
+    if (!usdtTx) {
+      return res.status(200).json({ message: "No USDT transfer detected" });
     }
 
-    const amount = deposit.valueWithDecimals || (
-      Number(deposit.value) / 10 ** (Number(deposit.tokenDecimals) || 18)
+    const amount = usdtTx.valueWithDecimals || (
+      Number(usdtTx.value) / 10 ** (Number(usdtTx.tokenDecimals) || 18)
     ).toString();
 
     const payload = {
-      fromAddress: deposit.from,
-      toAddress: deposit.to,
-      hash: deposit.transactionHash || tx.hash,
+      fromAddress: usdtTx.from,
+      toAddress: usdtTx.to,
+      hash: usdtTx.transactionHash || tx.hash,
       amount,
     };
 
@@ -46,7 +45,7 @@ export default async function handler(req, res) {
       }
     );
 
-    const result = await forward.text(); // in case it's not JSON
+    const result = await forward.text();
 
     return res.status(200).json({
       success: true,
@@ -55,7 +54,7 @@ export default async function handler(req, res) {
     });
 
   } catch (err) {
-    console.error("Error forwarding USDT deposit:", err);
+    console.error("Error forwarding USDT transfer:", err);
     return res.status(500).json({ error: "Internal error" });
   }
 }
