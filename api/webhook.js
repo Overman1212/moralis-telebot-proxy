@@ -5,22 +5,23 @@ export default async function handler(req, res) {
 
   const body = req.body;
   const tx = body?.txs?.[0];
+  const confirmed = body?.confirmed === true;
   const erc20Transfers = body?.erc20Transfers || [];
 
   try {
-    if (!tx || tx.receiptStatus !== "1") {
-      return res.status(200).json({ message: "No successful transaction" });
+    if (!confirmed || !tx || tx.receiptStatus !== "1") {
+      return res.status(200).json({ message: "Not confirmed or failed tx" });
     }
 
     const USDT_CONTRACT = "0x55d398326f99059ff775485246999027b3197955";
 
-    // ✅ Find first USDT transfer (deposit or withdrawal)
+    // ✅ Find USDT transfer (any direction)
     const usdtTx = erc20Transfers.find(t =>
       t.contract?.toLowerCase() === USDT_CONTRACT.toLowerCase()
     );
 
     if (!usdtTx) {
-      return res.status(200).json({ message: "No USDT transfer detected" });
+      return res.status(200).json({ message: "No USDT transfer found" });
     }
 
     const amount = usdtTx.valueWithDecimals || (
