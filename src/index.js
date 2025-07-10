@@ -1,19 +1,11 @@
 export default {
   async fetch(request, env, ctx) {
     if (request.method === 'POST') {
-      const body = await request.json(); // Optional: parse incoming JSON
-      console.log('Received POST data:', body);
-
-      // Return 200 OK immediately
-      return new Response('✅ Webhook received successfully.', {
-        status: 200,
-        headers: { 'Content-Type': 'text/plain' },
-      });
+      const data = await request.json();
+      console.log("Received:", data);
+      return new Response("✅ Webhook received", { status: 200 });
     }
 
-    return new Response('❌ Method Not Allowed', {
-      status: 405,
-      headers: { Allow: 'POST' },
-    });
+    return new Response("❌ Method Not Allowed", { status: 405 });
   }
 };
