@@ -1,5 +1,3 @@
 name = "my-webhook-api"
-type = "javascript"
-
-[env.production]
-workers_dev = true
+main = "src/index.js"
+compatibility_date = "2025-07-10"
