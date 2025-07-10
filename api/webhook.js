@@ -4,21 +4,37 @@ export default async function handler(req, res) {
   }
 
   const body = req.body;
+  const tx = body?.txs?.[0];
 
   try {
-    const tx = body?.txs?.[0];
-
+    // Check success
     if (!tx || tx.receiptStatus !== "1") {
       return res.status(200).json({ message: "No successful tx to forward" });
     }
 
-    // Prepare filtered payload
-    const payload = {
-      fromAddress: tx.fromAddress,
-      toAddress: tx.toAddress,
-      hash: tx.hash,
-      amount: tx.value,
-    };
+    let payload;
+
+    // ERC-20 Transfer
+    if (body?.erc20Transfers?.length > 0) {
+      const tokenTx = body.erc20Transfers[0];
+
+      payload = {
+        fromAddress: tokenTx.fromAddress,
+        toAddress: tokenTx.toAddress,
+        hash: tx.hash,
+        amount: tokenTx.value, // USDT raw value, usually 6 decimals
+      };
+    }
+
+    // Native coin transfer
+    else {
+      payload = {
+        fromAddress: tx.fromAddress,
+        toAddress: tx.toAddress,
+        hash: tx.hash,
+        amount: tx.value,
+      };
+    }
 
     // Forward the filtered payload
     const forward = await fetch(
